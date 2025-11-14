@@ -1,0 +1,64 @@
+<div class="correction-section">
+    <h2>作业批改</h2>
+    
+    <!-- 上传作业区域 -->
+    <div class="upload-area">
+        <input type="file" id="homeworkUpload" accept="image/*">
+        <div class="preview-area" id="previewArea"></div>
+    </div>
+    
+    <!-- 批改工具 -->
+    <div class="correction-tools">
+        <button onclick="addMark('check')">✅ 正确</button>
+        <button onclick="addMark('wrong')">❌ 错误</button>
+        <button onclick="addMark('circle')">⭕ 圈出</button>
+        <button onclick="addNote()">📝 添加评语</button>
+    </div>
+    
+    <!-- 批改记录 -->
+    <div class="correction-records">
+        <h3>批改记录</h3>
+        <table id="correctionTable">
+            <thead>
+                <tr>
+                    <th>题号</th>
+                    <th>得分</th>
+                    <th>批注</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+let currentMarks = [];
+
+function addMark(type) {
+    const mark = {
+        type: type,
+        position: { x: 50, y: 50 }, // 实际中根据点击位置计算
+        timestamp: new Date().toISOString()
+    };
+    currentMarks.push(mark);
+    updateMarksDisplay();
+}
+
+async function saveCorrection() {
+    const homeworkData = {
+        student_id: '选中的学生ID',
+        subject: document.getElementById('subject').value,
+        title: document.getElementById('homeworkTitle').value,
+        content: '作业内容'
+    };
+    
+    const { data, error } = await supabase
+        .from('homework')
+        .insert([homeworkData]);
+        
+    if (!error) {
+        alert('批改记录保存成功！');
+    }
+}
+</script>
