@@ -1,0 +1,58 @@
+<div class="analysis-section">
+    <h2>学情分析</h2>
+    
+    <div class="charts">
+        <div class="chart-container">
+            <canvas id="scoreChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="knowledgeChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- 引入Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+async function loadAnalysisData() {
+    // 从数据库获取数据
+    const { data, error } = await supabase
+        .from('analysis')
+        .select('*');
+    
+    if (!error) {
+        renderCharts(data);
+    }
+}
+
+function renderCharts(data) {
+    // 成绩趋势图
+    const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+    new Chart(scoreCtx, {
+        type: 'line',
+        data: {
+            labels: ['第1次', '第2次', '第3次', '第4次'],
+            datasets: [{
+                label: '数学成绩',
+                data: [85, 78, 92, 88],
+                borderColor: '#667eea',
+                tension: 0.1
+            }]
+        }
+    });
+    
+    // 知识点掌握情况
+    const knowledgeCtx = document.getElementById('knowledgeChart').getContext('2d');
+    new Chart(knowledgeCtx, {
+        type: 'bar',
+        data: {
+            labels: ['代数', '几何', '函数', '统计'],
+            datasets: [{
+                label: '掌握率%',
+                data: [85, 72, 90, 65],
+                backgroundColor: '#764ba2'
+            }]
+        }
+    });
+}
+</script>
